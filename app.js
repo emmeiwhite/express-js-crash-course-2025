@@ -1,11 +1,16 @@
 import express from 'express'
+import path from 'path'
+import { fileURLToPath } from 'url'
 
 const app = express()
 
-// Setting our Routes
+// Fix for __dirname in ES modules
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
+// Setting our Routes
 app.get('/', (req, res) => {
-  res.send('Hello from Express!')
+  res.sendFile(path.join(__dirname, 'index.html'))
 })
 
 app.listen(3000, () => console.log(`Server is listening on port: 3000`))
