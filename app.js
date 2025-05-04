@@ -4,6 +4,9 @@ import { fileURLToPath } from 'url'
 
 const app = express()
 
+/** --- For Static site and assets --- */
+app.use(express.static('public'))
+
 // Fix for __dirname in ES modules
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
