@@ -5,11 +5,18 @@
 import express from 'express'
 const server = express()
 
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+// Recreate __dirname in ESM
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
 const PORT = process.env.PORT || 3000
 
 /** Step-2: Setting our routes to server user requests */
-
 server.get('/', (request, response, next) => {
-  response.send(`<h2>Hello From Express!</h2>`)
+  response.sendFile(path.join(__dirname, 'views', 'index.html'))
 })
+
 server.listen(PORT, () => console.log(`Listening on port ${PORT} ...`))
