@@ -1,5 +1,6 @@
 import express from 'express'
 const app = express()
+
 import mainRouter from './routes/index.js'
 app.set('view engine', 'ejs')
 
