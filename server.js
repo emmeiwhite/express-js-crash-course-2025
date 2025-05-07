@@ -10,7 +10,9 @@ console.log(app.get('views'))
 
 /** Step-3: Setup Routes to serve dynamic sites with ejs */
 app.get('/', (req, res) => {
-  res.render('index')
+  res.render('index', {
+    title: 'Home Page'
+  })
 })
 
 app.get('/about', (req, res) => {
