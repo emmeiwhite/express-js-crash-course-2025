@@ -1,4 +1,5 @@
 import express from 'express'
+import apiKey from '../middlewares/apiKey.js'
 
 const router = express.Router()
 
@@ -22,7 +23,7 @@ router.get('/services', (req, res) => {
 })
 
 /** --- Sending back API JSON data --- */
-router.get('/api/products', (req, res) => {
+router.get('/api/products', apiKey, (req, res) => {
   const products = [
     {
       id: 1,
