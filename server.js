@@ -14,6 +14,9 @@ const __dirname = path.dirname(__filename)
 
 const PORT = process.env.PORT || 3000
 
+/** Step-3:  */
+server.use(express.static('static_folder'))
+
 /** Step-2: Setting our routes to server user requests */
 server.get('/', (request, response, next) => {
   response.sendFile(path.join(__dirname, 'views', 'index.html'))
