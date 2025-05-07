@@ -16,11 +16,15 @@ app.get('/', (req, res) => {
 })
 
 app.get('/about', (req, res) => {
-  res.render('about')
+  res.render('about', {
+    title: 'About Page'
+  })
 })
 
 app.get('/services', (req, res) => {
-  res.render('services')
+  res.render('services', {
+    title: 'Services Page'
+  })
 })
 
 const PORT = process.env.PORT || 3000
