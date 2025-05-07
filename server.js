@@ -19,4 +19,8 @@ server.get('/', (request, response, next) => {
   response.sendFile(path.join(__dirname, 'views', 'index.html'))
 })
 
+server.get('/about', (request, response) => {
+  response.sendFile(path.join(__dirname, 'views', 'about.html'))
+})
+
 server.listen(PORT, () => console.log(`Listening on port ${PORT} ...`))
