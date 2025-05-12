@@ -22,7 +22,7 @@ router.get('/services', (req, res) => {
   })
 })
 
-/** --- Sending back API JSON data --- */
+/** --- Sending back API JSON data
 router.get('/api/products', apiKey, (req, res) => {
   const products = [
     {
@@ -64,5 +64,5 @@ router.get('/api/products', apiKey, (req, res) => {
 
   res.json(products)
 })
-
+--- */
 export default router
