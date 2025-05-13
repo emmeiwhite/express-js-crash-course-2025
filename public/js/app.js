@@ -120,6 +120,33 @@ function Products({ products, setProducts, loading, setLoading }) {
       </div>
     )
   }
+
+  async function handleDelete(id) {
+    try {
+      const response = await fetch(`/api/delete/${id}`, {
+        method: 'DELETE'
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Could not delete the product')
+      }
+
+      const result = await response.json()
+      console.log(`Delete:`, result)
+
+      /** IMPORTANT:
+       * Fetch updated product list
+       */
+
+      const res = await fetch('/api/products')
+      const data = await res.json()
+      setProducts(data.products)
+    } catch (error) {
+      console.error('Delete Error:', error.message)
+      alert(error.message)
+    }
+  }
   return (
     <div className="p-6 bg-white">
       <h2 className="text-2xl font-semibold mb-4 text-gray-800">Product List</h2>
@@ -137,7 +164,11 @@ function Products({ products, setProducts, loading, setLoading }) {
               /> */}
               <h3 className="text-lg font-semibold text-gray-800 mb-1">{name}</h3>
               <p className="text-sm text-gray-600">$ {price}</p>
-              <button className="bg-blue border rounded-sm px-3 py-1 ">delete</button>
+              <button
+                className="bg-blue border rounded-sm px-3 py-1 "
+                onClick={() => handleDelete(id)}>
+                delete
+              </button>
             </li>
           )
         })}
