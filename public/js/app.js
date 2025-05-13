@@ -1,31 +1,25 @@
-function ProductForm({ form, setForm }) {
-  function handleChange(e) {
+function ProductForm({ product, setProduct }) {
+  function handleInputChange(e) {
     const { name, value } = e.target
-    setForm(prev => ({
-      ...prev,
+
+    setProduct({
+      ...product,
       [name]: value,
       id: new Date().toISOString()
-    }))
+    })
   }
 
   function handleSubmit(e) {
     e.preventDefault()
 
-    if (!form.name || !form.price) return
+    if (!product.name || !product.price) return
 
-    fetch('/api/products', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(form)
+    console.log(product)
+
+    setProduct({
+      name: '',
+      price: ''
     })
-      .then(res => res.json())
-      .then(data => {
-        console.log('Product added:', data)
-        // Optional: reset form or show confirmation
-      })
-      .catch(err => console.error('Error adding product:', err))
   }
 
   return (
@@ -44,8 +38,8 @@ function ProductForm({ form, setForm }) {
           id="name"
           name="name"
           type="text"
-          value={form.name}
-          onChange={handleChange}
+          value={product.name}
+          onChange={handleInputChange}
           className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2"
           required
         />
@@ -62,8 +56,8 @@ function ProductForm({ form, setForm }) {
           name="price"
           type="number"
           step="0.01"
-          value={form.price}
-          onChange={handleChange}
+          value={product.price}
+          onChange={handleInputChange}
           className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2"
           required
         />
@@ -79,6 +73,7 @@ function ProductForm({ form, setForm }) {
 }
 
 function Products({ products, setProducts, loading, setLoading }) {
+  /** 1. First API call with */
   function fetchProducts() {
     fetch('/api/products')
       .then(response => response.json())
@@ -131,7 +126,7 @@ function App() {
   const [products, setProducts] = React.useState([])
   const [loading, setLoading] = React.useState(true)
 
-  const [form, setForm] = React.useState({
+  const [product, setProduct] = React.useState({
     id: '',
     name: '',
     price: ''
@@ -139,8 +134,8 @@ function App() {
   return (
     <>
       <ProductForm
-        form={form}
-        setForm={setForm}
+        product={product}
+        setProduct={setProduct}
       />
       <Products
         products={products}
