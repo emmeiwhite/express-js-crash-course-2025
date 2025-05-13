@@ -6,6 +6,7 @@ import productsRouter from './routes/productsRouter.js'
 app.set('view engine', 'ejs')
 
 app.use(express.static('public'))
+app.use(express.json())
 /** Registering our routers */
 app.use(productsRouter)
 app.use(mainRouter)

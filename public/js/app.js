@@ -1,38 +1,154 @@
-function App() {
-  const [products, setProducts] = React.useState([])
+function ProductForm({ form, setForm }) {
+  function handleChange(e) {
+    const { name, value } = e.target
+    setForm(prev => ({
+      ...prev,
+      [name]: value,
+      id: new Date().toISOString()
+    }))
+  }
 
+  function handleSubmit(e) {
+    e.preventDefault()
+
+    if (!form.name || !form.price) return
+
+    fetch('/api/products', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(form)
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log('Product added:', data)
+        // Optional: reset form or show confirmation
+      })
+      .catch(err => console.error('Error adding product:', err))
+  }
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4 max-w-md mx-auto bg-white p-6 rounded-xl shadow-md">
+      <h2 className="text-2xl font-semibold text-gray-800 mb-4">Add New Product</h2>
+
+      <div>
+        <label
+          htmlFor="name"
+          className="block text-sm font-medium text-gray-700">
+          Name
+        </label>
+        <input
+          id="name"
+          name="name"
+          type="text"
+          value={form.name}
+          onChange={handleChange}
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2"
+          required
+        />
+      </div>
+
+      <div>
+        <label
+          htmlFor="price"
+          className="block text-sm font-medium text-gray-700">
+          Price
+        </label>
+        <input
+          id="price"
+          name="price"
+          type="number"
+          step="0.01"
+          value={form.price}
+          onChange={handleChange}
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2"
+          required
+        />
+      </div>
+
+      <button
+        type="submit"
+        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+        Add Product
+      </button>
+    </form>
+  )
+}
+
+function Products({ products, setProducts, loading, setLoading }) {
   function fetchProducts() {
     fetch('/api/products')
       .then(response => response.json())
       .then(data => {
         console.log(data)
-
-        // setProducts
+        setProducts(data.products)
+        setLoading(false)
       })
   }
   React.useEffect(() => {
     fetchProducts()
   }, [])
+
+  if (loading) {
+    return (
+      <div className="p-6 bg-white">
+        <h2 className="text-2xl font-semibold mb-4 text-gray-800">Product List</h2>
+
+        <h3>Loading ...</h3>
+      </div>
+    )
+  }
   return (
     <div className="p-6 bg-white">
       <h2 className="text-2xl font-semibold mb-4 text-gray-800">Product List</h2>
       <ul className="grid gap-6 grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))]">
-        <li className="p-4 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
-          <div className="text-lg font-medium text-gray-900">Awesome Product</div>
-          <div className="text-sm text-gray-600">This is a brief description of the product.</div>
-        </li>
-
-        <li className="p-4 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
-          <div className="text-lg font-medium text-gray-900">Awesome Product</div>
-          <div className="text-sm text-gray-600">This is a brief description of the product.</div>
-        </li>
-
-        <li className="p-4 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
-          <div className="text-lg font-medium text-gray-900">Awesome Product</div>
-          <div className="text-sm text-gray-600">This is a brief description of the product.</div>
-        </li>
+        {products.map(product => {
+          const { id, name, price, image, description } = product
+          return (
+            <li
+              key={id}
+              className="p-4 bg-white rounded-xl shadow hover:shadow-md transition-shadow border border-gray-100">
+              {/* <img
+                src={image}
+                alt={name}
+                className="w-full h-48 object-cover rounded-md mb-4"
+              /> */}
+              <h3 className="text-lg font-semibold text-gray-800 mb-1">{name}</h3>
+              <p className="text-sm text-gray-600">${price}</p>
+              <button className="bg-blue border rounded-sm px-3 py-1 ">delete</button>
+            </li>
+          )
+        })}
       </ul>
     </div>
+  )
+}
+
+function App() {
+  const [products, setProducts] = React.useState([])
+  const [loading, setLoading] = React.useState(true)
+
+  const [form, setForm] = React.useState({
+    id: '',
+    name: '',
+    price: ''
+  })
+  return (
+    <>
+      <ProductForm
+        form={form}
+        setForm={setForm}
+      />
+      <Products
+        products={products}
+        setProducts={setProducts}
+        loading={loading}
+        setLoading={setLoading}
+      />
+    </>
   )
 }
 

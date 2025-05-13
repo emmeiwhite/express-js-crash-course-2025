@@ -13,4 +13,10 @@ router.get('/api/products', (req, res) => {
   res.json({ products })
 })
 
+router.post('/api/products', (req, res) => {
+  const product = req.body
+  console.log('New product received:', product)
+  products.push(product)
+  res.status(201).json({ message: 'Product added successfully', product })
+})
 export default router
