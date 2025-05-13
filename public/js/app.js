@@ -1,38 +1,49 @@
-function ProductForm({ product, setProduct }) {
+function ProductForm({ product, setProduct, products, setProducts }) {
+  // Controlled Form Input
   function handleInputChange(e) {
     const { name, value } = e.target
 
     setProduct({
       ...product,
-      [name]: value,
-      id: new Date().toISOString()
+      [name]: value
     })
   }
 
-  function handleSubmit(e) {
+  // Form submission
+  async function handleSubmit(e) {
     e.preventDefault()
 
     if (!product.name || !product.price) return
 
-    console.log(product)
-
-    /** --- We got to send data to the server now --- */
-    fetch('/api/products', {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json'
-      },
-      body: JSON.stringify(product)
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Product added:', data)
+    try {
+      // Send POST request to backend
+      const response = await fetch('/api/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(product)
       })
 
-    setProduct({
-      name: '',
-      price: ''
-    })
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to add product')
+      }
+
+      const data = await response.json()
+      console.log('Product added:', data)
+
+      // Fetch updated list from backend
+      const res = await fetch('/api/products')
+      const result = await res.json()
+      setProducts(result.products)
+
+      // Reset form
+      setProduct({ name: '', price: '' })
+    } catch (err) {
+      console.error('Error:', err.message)
+      alert(err.message)
+    }
   }
 
   return (
@@ -91,7 +102,7 @@ function Products({ products, setProducts, loading, setLoading }) {
     fetch('/api/products')
       .then(response => response.json())
       .then(data => {
-        console.log(data)
+        // console.log(data)
         setProducts(data.products)
         setLoading(false)
       })
@@ -125,7 +136,7 @@ function Products({ products, setProducts, loading, setLoading }) {
                 className="w-full h-48 object-cover rounded-md mb-4"
               /> */}
               <h3 className="text-lg font-semibold text-gray-800 mb-1">{name}</h3>
-              <p className="text-sm text-gray-600">${price}</p>
+              <p className="text-sm text-gray-600">$ {price}</p>
               <button className="bg-blue border rounded-sm px-3 py-1 ">delete</button>
             </li>
           )
@@ -149,6 +160,8 @@ function App() {
       <ProductForm
         product={product}
         setProduct={setProduct}
+        products={products}
+        setProducts={setProducts}
       />
       <Products
         products={products}
