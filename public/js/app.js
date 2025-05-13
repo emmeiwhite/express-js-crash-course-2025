@@ -123,7 +123,7 @@ function Products({ products, setProducts, loading, setLoading }) {
 
   async function handleDelete(id) {
     try {
-      const response = await fetch(`/api/delete/${id}`, {
+      const response = await fetch(`/api/products/${id}`, {
         method: 'DELETE'
       })
 

@@ -1,5 +1,7 @@
 import express from 'express'
-import { products } from '../api-data/products.js'
+import { productsStore } from '../api-data/products.js'
+
+let { products } = productsStore
 
 const router = express.Router()
 
@@ -36,6 +38,17 @@ router.post('/api/products', (req, res) => {
   console.log(products)
 
   res.status(201).json({ message: 'Product added successfully', product })
+})
+
+/** --- 3. API DELETE Request | Remove resource ---  */
+
+router.delete('/api/products/:id', (req, res) => {
+  console.log(req.params.id)
+  if (!req.params.id) {
+    res.json({ error: 'parameter not provided' })
+  }
+  products = products.filter(product => product.id !== req.params.id)
+  res.status(203).json({ status: 'OK' })
 })
 
 export default router
