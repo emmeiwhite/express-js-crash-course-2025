@@ -16,6 +16,19 @@ function ProductForm({ product, setProduct }) {
 
     console.log(product)
 
+    /** --- We got to send data to the server now --- */
+    fetch('/api/products', {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json'
+      },
+      body: JSON.stringify(product)
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Product added:', data)
+      })
+
     setProduct({
       name: '',
       price: ''
